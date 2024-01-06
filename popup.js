@@ -1,6 +1,6 @@
 // popup.js
 
-console.log('in popup.js GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG start');
+console.log('GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG(popup.js) Start.');
 
 //APIリクエスト
 async function sendApiRequest(method, url, apiToken, body = null) {
@@ -20,13 +20,13 @@ async function sendApiRequest(method, url, apiToken, body = null) {
         const response = await fetch(url, options);
         const responseData = await response.json(); 
         if (!response.ok) {
-            const error = new Error(responseData.message || 'in popup.js AAAAAAAAA API request failed');
+            const error = new Error(responseData.message || 'AAAAAAAAA(popup.js) API request failed.');
             error.status = response.status;
+            console.log('CCCCCCCCCCCCCCCCCCCCC(popup.js) error.message: ', error.message, ' YYYYYYYYYYY(popup.js) error.status: ', error.status);
             throw error;
         }
         return await responseData;
     } catch (error) {
-        console.error('in popup.js CCCCCCCCCCCCCCCCCCCCC error.message: ', error.message, ' YYYYYYYYYYY error.status: ', error.status);
         throw error;
     }
 }
@@ -38,7 +38,7 @@ function getApiToken() {
             if (response && response.token) {
                 resolve(response.token);
             } else {
-                reject('in popup.js UUUUUUUUUUU User token not found. Please login.');
+                reject('UUUUUUUUUUU(popup.js) User token not found. Please login.');
             }
         });
     });
@@ -49,7 +49,7 @@ function getCurrentTabUrl() {
     return new Promise((resolve, reject) => {
         chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
             if (tabs.length === 0) {
-                reject('in popup.js CCCCCCCCCCC no current tab.');
+                reject('CCCCCCCCCCC(popup.js) No current tab.');
             } else {
                 resolve(tabs[0].url);
             }
@@ -78,7 +78,7 @@ async function handleAction(actionType) {
             document.getElementById("msg").textContent = response_json.message;
         }
     } catch (error) {
-        console.error('in popup.js BBBBBBBBBB: ', error);
+        console.error('BBBBBBBBBB(popup.js) catch error: ', error);
     }
 }
 // ボタンにイベントリスナーを設定
@@ -98,7 +98,7 @@ function handleAction_test() {
     chrome.runtime.sendMessage({ request: "getApiToken" }, async function(response) {
         if (response && response.token) {
             const apiToken = response.token;
-            console.log('in popup.js FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF apiToken: ' + apiToken);
+            console.log('FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF(popup.js) apiToken: ' + apiToken);
             // 現在のタブのURLを取得
             chrome.tabs.query({active: true, currentWindow: true}, async function(tabs) {
                 var currentTab = tabs[0];
@@ -111,7 +111,7 @@ function handleAction_test() {
                 }
             });
         } else {
-            console.error('in popup.js VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV User token not found. Please login.');
+            console.error('VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV(popup.js) User token not found. Please login.');
         }
     });
 }
