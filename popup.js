@@ -120,8 +120,9 @@ async function getArticleState() {
         const articleUrl = await getCurrentTabUrl();
         console.log('DDDDDDDDDDDDDDDDDD(popup.js) Current Article URL: ' + articleUrl);
 
-        const apiToken = await getApiToken();
+        const apiToken = await getApiToken();//rejectされたときにcatchで捕捉されない？マジで疑問です。
         const apiUrl = `http://techblog.shiroatohiro.com/api/get-state?articleUrl=${encodeURIComponent(articleUrl)}`;
+        console.log('SSSSSSSSSS(popup.js) apiToken: ' + apiToken);
 
         const response = await sendApiRequest('GET', apiUrl, apiToken);
         console.log('XXXXXXXXXXXXXXXXXXX(popup.js) Article State:', response);
@@ -159,33 +160,6 @@ function updateButtonsVisibility(response) {
         document.getElementById("archive").style.display = "block";
         document.getElementById("unarchive").style.display = "none";
     }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////テスト
-document.getElementById("test").addEventListener("click", () => handleAction_test());
-
-function handleAction_test() {
-    // ここでbackground.jsからトークンを取得する
-    chrome.runtime.sendMessage({ request: "getApiToken" }, async function(response) {
-        if (response && response.token) {
-            const apiToken = response.token;
-            console.log('FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF(popup.js) apiToken: ' + apiToken);
-            // 現在のタブのURLを取得
-            chrome.tabs.query({active: true, currentWindow: true}, async function(tabs) {
-                var currentTab = tabs[0];
-                if (currentTab) {
-                    const articleUrl = encodeURIComponent(currentTab.url);
-                    const apiUrl = `http://techblog.shiroatohiro.com/api/test`;
-                    // 非同期リクエストを実行して応答を待つ
-                    const response_json = await sendApiRequest('GET', apiUrl, apiToken);
-                    document.getElementById("msg").textContent = response_json.message;
-                }
-            });
-        } else {
-            console.error('VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV(popup.js) User token not found. Please login.');
-        }
-    });
 }
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////

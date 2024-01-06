@@ -6,26 +6,79 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <style>
     html, body {
-      width: 400px;  /* 幅を指定 */
-      height: 600px; /* 高さを指定 */
+      width: 250px;  /* 幅を指定 */
+      height: 200px; /* 高さを指定 */
       overflow: auto; /* 必要に応じてスクロールバーを表示 */
     }
-    /* その他のスタイル */
+    #error_msg {
+      background-color: #f8d7da; /* 淡い赤色 */
+      color: #721c24; /* 濃い赤色 */
+    }
+    #success_msg {
+      background-color: #d4edda; /* 淡い緑色 */
+      color: #155724; /* 濃い緑色 */
+    }
+    .icon-img {
+        max-width: 32px; /* 画像の最大幅を設定 */
+        cursor: pointer;
+    }
+    .icon-img img {
+        width: 95%;
+        transition: opacity 0.3s ease;
+    }
+    .icon-img:hover img {
+        opacity: 0.7; /* ホバー時の画像の不透明度を変更 */
+    }
+    .icon-img:hover {
+      background-color: #add8e6;/* ホバー時の背景色を変更 */
+    }
+    .text-extra-small {
+      font-size: 0.7rem; /* ここで希望するフォントサイズに設定 */
+    }
   </style>
 </head>
+
 <body>
-  <div class="container-fluid">
-    <div id='msg'></div>
-    <div class="d-flex flex-wrap justify-content-around">
-      <button id="test" class="btn btn-primary my-1">test</button>
-      <button id="like" class="btn btn-success my-1">いいね</button>
-      <button id="unlike" class="btn btn-warning my-1">いいね取り消し</button>
-      <button id="bookmark" class="btn btn-info my-1">ブックマーク</button>
-      <button id="unbookmark" class="btn btn-secondary my-1">ブックマーク取り消し</button>
-      <button id="archive" class="btn btn-dark my-1">アーカイブ</button>
-      <button id="unarchive" class="btn btn-light my-1">アーカイブ取り消し</button>
+
+<div class="container-fluid mt-2">
+
+  <p class="text-center my-2 py-2 rounded shadow" style="background-color: #007bff; color: white;">Super Tech Blog Management</p>
+
+  <div class="w-100">
+    <p id='error_msg' class="text-center text-extra-small"></p>
+  </div>
+
+  <div class="w-100">
+    <p id='success_msg' class="text-center text-extra-small"></p>
+  </div>
+
+  <div class="d-flex flex-wrap justify-content-around m-4">
+    <div id="unlike" class="icon-img">
+        <img src="images/like.png" alt="Like" class="img-fluid">
+    </div>
+    <div id="like" class="icon-img">
+        <img src="images/unlike.png" alt="Unlike" class="img-fluid">
+    </div>
+    <div id="unbookmark" class="icon-img">
+        <img src="images/bookmark.png" alt="Bookmark" class="img-fluid">
+    </div>
+    <div id="bookmark" class="icon-img">
+        <img src="images/unbookmark.png" alt="Unbookmark" class="img-fluid">
+    </div>
+    <div id="unarchive" class="icon-img">
+        <img src="images/archive.png" alt="Archive" class="img-fluid">
+    </div>
+    <div id="archive" class="icon-img">
+        <img src="images/unarchive.png" alt="Unarchive" class="img-fluid">
     </div>
   </div>
-  <script src="popup.js"></script>
+</div>
+
+<div id="test">
+  test
+</div>
+
+<script src="popup.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
