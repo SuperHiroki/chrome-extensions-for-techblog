@@ -2,9 +2,11 @@
 
 console.log('in popup.js GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG start');
 
-async function sendApiRequest(method, url, apiToken) {
+let apiToken = null;
+
+async function sendApiRequest(method, url, apiToken, body = null) {
     try {
-        const response = await fetch(url, {
+        const options = {
             method: method,
             credentials: 'include',
             headers: {
@@ -12,38 +14,60 @@ async function sendApiRequest(method, url, apiToken) {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
-        });
-
+        };
+        if (body) {
+            options.body = JSON.stringify(body);
+        }
+        const response = await fetch(url, options);
         if (!response.ok) {
-            throw new Error(`API request failed: ${response.statusText}`);
+            throw new Error(`in popup.js AAAAAAAAA API request failed: ${response.statusText}`);
         }
         return await response.json();
     } catch (error) {
-        console.error('in popup.js EEEEEEEEEEEEEEEEEEEEEEEEE Error:', error);
+        console.error('in popup.js EEEEEEEE Error:', error);
     }
 }
 
-function handleAction(actionType) {
-    // ここでbackground.jsからトークンを取得する
-    chrome.runtime.sendMessage({ request: "getApiToken" }, async function(response) {
-        if (response && response.token) {
-            const apiToken = response.token;
-            console.log('in popup.js HHHHHHHHHHHHHHHHHHHHHHHHHHHH apiToken: ' + apiToken);
-            // 現在のタブのURLを取得
-            chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-                var currentTab = tabs[0];
-                if (currentTab) {
-                    const articleUrl = encodeURIComponent(currentTab.url);
-                    const apiUrl = `http://techblog.shiroatohiro.com/api/${actionType}-article/url/${articleUrl}`;
-                    sendApiRequest(actionType === 'unlike' || actionType === 'unbookmark' || actionType === 'unarchive' ? 'DELETE' : 'POST', apiUrl, apiToken);
-                }
-            });
-        } else {
-            console.error('in popup.js UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU User token not found. Please login.');
-        }
+function getApiToken() {
+    return new Promise((resolve, reject) => {
+        chrome.runtime.sendMessage({ request: "getApiToken" }, function(response) {
+            if (response && response.token) {
+                resolve(response.token);
+            } else {
+                reject('in popup.js UUUUUUUUUUU User token not found. Please login.');
+            }
+        });
     });
 }
 
+function getCurrentTabUrl() {
+    return new Promise((resolve, reject) => {
+        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+            if (tabs.length === 0) {
+                reject('in popup.js CCCCCCCCCCC no current tab.');
+            } else {
+                resolve(tabs[0].url);
+            }
+        });
+    });
+}
+
+async function handleAction(actionType) {
+    try {
+        apiToken = await getApiToken();
+        const articleUrl = await getCurrentTabUrl();
+
+        let apiUrl = `http://techblog.shiroatohiro.com/api/${actionType}-article`;
+        let body = { url: articleUrl };
+
+        const response_json = await sendApiRequest(actionType, apiUrl, apiToken, body);
+        if(response_json && response_json.message) {
+            document.getElementById("msg").textContent = response_json.message;
+        }
+    } catch (error) {
+        console.error('in popup.js EEEEEEEEEEE Error: ', error);
+    }
+}
 // ボタンにイベントリスナーを設定
 document.getElementById("like").addEventListener("click", () => handleAction('like'));
 document.getElementById("unlike").addEventListener("click", () => handleAction('unlike'));
@@ -53,8 +77,7 @@ document.getElementById("archive").addEventListener("click", () => handleAction(
 document.getElementById("unarchive").addEventListener("click", () => handleAction('unarchive'));
 
 ////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-//テスト
+////////////////////////////////////////////////////////////////////////////////テスト
 document.getElementById("test").addEventListener("click", () => handleAction_test());
 
 function handleAction_test() {
