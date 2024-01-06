@@ -1,14 +1,31 @@
 <!DOCTYPE html>
 <html>
+<head>
+  <meta charset="UTF-8">
+  <!-- Bootstrap CSS CDN -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    html, body {
+      width: 400px;  /* 幅を指定 */
+      height: 600px; /* 高さを指定 */
+      overflow: auto; /* 必要に応じてスクロールバーを表示 */
+    }
+    /* その他のスタイル */
+  </style>
+</head>
 <body>
-  <div id='msg'></div>
-  <button id="test">test</button>
-  <button id="like">いいね</button>
-  <button id="unlike">いいね取り消し</button>
-  <button id="bookmark">ブックマーク</button>
-  <button id="unbookmark">ブックマーク取り消し</button>
-  <button id="archive">アーカイブ</button>
-  <button id="unarchive">アーカイブ取り消し</button>
+  <div class="container-fluid">
+    <div id='msg'></div>
+    <div class="d-flex flex-wrap justify-content-around">
+      <button id="test" class="btn btn-primary my-1">test</button>
+      <button id="like" class="btn btn-success my-1">いいね</button>
+      <button id="unlike" class="btn btn-warning my-1">いいね取り消し</button>
+      <button id="bookmark" class="btn btn-info my-1">ブックマーク</button>
+      <button id="unbookmark" class="btn btn-secondary my-1">ブックマーク取り消し</button>
+      <button id="archive" class="btn btn-dark my-1">アーカイブ</button>
+      <button id="unarchive" class="btn btn-light my-1">アーカイブ取り消し</button>
+    </div>
+  </div>
   <script src="popup.js"></script>
 </body>
 </html>

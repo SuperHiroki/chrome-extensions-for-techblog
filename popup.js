@@ -2,6 +2,8 @@
 
 console.log('GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG(popup.js) Start.');
 
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////サブ関数
 //APIリクエスト
 async function sendApiRequest(method, url, apiToken, body = null) {
     const options = {
@@ -57,11 +59,13 @@ function getCurrentTabUrl() {
     });
 }
 
-//メインの関数
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////ボタンを押したときに発火する関数
+//いいね（ブックマーク、アーカイブ）をつけるリクエストを飛ばすメイン関数
 async function handleAction(actionType) {
     try {
         //methodを取得
-        let method = 'GET';
+        let method = null;
         if(actionType == 'like'||actionType == 'bookmark'||actionType == 'archive'){
             method ='POST';
         }else if(actionType == 'unlike'||actionType == 'unbookmark'||actionType == 'unarchive'){
@@ -82,13 +86,80 @@ async function handleAction(actionType) {
         console.error('BBBBBBBBBB(popup.js) catch error: ', error);
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////ページを読み込んだ時に発火する関数
+// メイン関数
+document.addEventListener('DOMContentLoaded', async () => {
+    //ボタンにイベントを設置
+    setActionToButton();
+    try {
+        //いいね（ブックマーク、アーカイブ）の状態を取得
+        const response = await getArticleState();
+        console.log('WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW(popup.js) response: ', response, 'DDDDDDDD');
+        //ボタンの表示・非表示を変更する
+        updateButtonsVisibility(response);
+    } catch (error) {
+        console.error('EEEEEEEEEEEEEEEEEEEEEEEEE(popup.js) Caught error:', error);
+    }
+});
+
 // ボタンにイベントリスナーを設定
-document.getElementById("like").addEventListener("click", () => handleAction('like'));
-document.getElementById("unlike").addEventListener("click", () => handleAction('unlike'));
-document.getElementById("bookmark").addEventListener("click", () => handleAction('bookmark'));
-document.getElementById("unbookmark").addEventListener("click", () => handleAction('unbookmark'));
-document.getElementById("archive").addEventListener("click", () => handleAction('archive'));
-document.getElementById("unarchive").addEventListener("click", () => handleAction('unarchive'));
+function setActionToButton(){
+    document.getElementById("like").addEventListener("click", () => handleAction('like'));
+    document.getElementById("unlike").addEventListener("click", () => handleAction('unlike'));
+    document.getElementById("bookmark").addEventListener("click", () => handleAction('bookmark'));
+    document.getElementById("unbookmark").addEventListener("click", () => handleAction('unbookmark'));
+    document.getElementById("archive").addEventListener("click", () => handleAction('archive'));
+    document.getElementById("unarchive").addEventListener("click", () => handleAction('unarchive'));
+}
+
+// 現在の記事のいいね、ブックマーク、アーカイブの状態を取得
+async function getArticleState() {
+    try {
+        const articleUrl = await getCurrentTabUrl();
+        console.log('DDDDDDDDDDDDDDDDDD(popup.js) Current Article URL: ' + articleUrl);
+
+        const apiToken = await getApiToken();
+        const apiUrl = `http://techblog.shiroatohiro.com/api/get-state?articleUrl=${encodeURIComponent(articleUrl)}`;
+
+        const response = await sendApiRequest('GET', apiUrl, apiToken);
+        console.log('XXXXXXXXXXXXXXXXXXX(popup.js) Article State:', response);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
+
+// ボタンの表示を更新する関数
+function updateButtonsVisibility(response) {
+    // likeの状態に基づいてボタンを表示・非表示
+    if (response.like) {
+        document.getElementById("like").style.display = "none";
+        document.getElementById("unlike").style.display = "block";
+    } else {
+        document.getElementById("like").style.display = "block";
+        document.getElementById("unlike").style.display = "none";
+    }
+
+    // bookmarkの状態に基づいてボタンを表示・非表示
+    if (response.bookmark) {
+        document.getElementById("bookmark").style.display = "none";
+        document.getElementById("unbookmark").style.display = "block";
+    } else {
+        document.getElementById("bookmark").style.display = "block";
+        document.getElementById("unbookmark").style.display = "none";
+    }
+
+    // archiveの状態に基づいてボタンを表示・非表示
+    if (response.archive) {
+        document.getElementById("archive").style.display = "none";
+        document.getElementById("unarchive").style.display = "block";
+    } else {
+        document.getElementById("archive").style.display = "block";
+        document.getElementById("unarchive").style.display = "none";
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////テスト
