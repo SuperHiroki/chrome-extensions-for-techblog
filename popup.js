@@ -105,22 +105,22 @@ function updateButtonsVisibilityFromActionType(actionType) {
 // メイン関数
 document.addEventListener('DOMContentLoaded', async () => {
     //ログインしていないものとして表示する
-    console.log('HHHHHHHHHHHHHHHHHHHHHHHHHHHHHH(popup.js) ');
+    console.log('HHHHHHHHHHHHHHHHHHHHHHHHHHHHHH(popup.js) DOMContentLoaded');
     changeVisibilityFromIsLoggedIn(false);
+    updateButtonsVisibility(null);
     //ボタンにイベントを設置
     setActionToButton();
     try {
-        //いいね（ブックマーク、アーカイブ）の状態を取得
-        const response = await getArticleState();
-        console.log('WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW(popup.js) response: ', response, ' DDDDDDDD');
         //ユーザ情報を取得
         const responseUserData = await getUserInfo();
         console.log('HHHHHHHHHHHHHHHHHHHHHHHHHHHHHH(popup.js) responseUserData: ', responseUserData, ' CCCCCCCC');
-        //画面に反映する
         changeVisibilityFromIsLoggedIn(true);
+        document.getElementById("userName").textContent = responseUserData.name;
+        //いいね（ブックマーク、アーカイブ）の状態を取得
+        const response = await getArticleState();
+        console.log('WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW(popup.js) response: ', response, ' DDDDDDDD');
         updateButtonsVisibility(response);
         document.getElementById("success_msg").textContent = response.message;
-        document.getElementById("userName").textContent = responseUserData.name;
     } catch (error) {
         document.getElementById("error_msg").textContent = error;
         console.error('EEEEEEEEEEEEEEEEEEEEEEEEE(popup.js) Caught error: ', error);
@@ -167,7 +167,16 @@ function changeVisibilityFromIsLoggedIn(isLoggedIn = false) {
 }
 
 // ボタンの表示を更新する関数
-function updateButtonsVisibility(response) {
+function updateButtonsVisibility(response = null) {
+    //全体のボタンに適用する
+    if(response==null){
+        console.log('XXXXXXXXXXXXXXXXXXX(popup.js) WWWWWWWWWWWWWWWWWWWWWWWWWWWWWW');
+        document.getElementById("allButtons").style.display = "none";
+        return;
+    }else{
+        document.getElementById("allButtons").style.display = "block";
+    }
+
     // likeの状態に基づいてボタンを表示・非表示
     if (response.like) {
         document.getElementById("like").style.display = "none";
