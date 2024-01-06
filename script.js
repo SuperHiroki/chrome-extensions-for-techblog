@@ -6,15 +6,15 @@ console.log('XXXXXXXXXXXXXXXXXXXX(script.js) Start.')
 ////////////////////////////////////////////////////////////////////////////////エラー（成功）メッセージの欄に動的にパディングを与える。
 // 要素の内容が変更された際に呼び出される関数
 function handleMutation(mutationsList) {
-for (let mutation of mutationsList) {
-    if (mutation.type === 'childList' || mutation.type === 'characterData') {
-    if (mutation.target.textContent.trim().length > 0) {
-        mutation.target.classList.add('p-2');
-    } else {
-        mutation.target.classList.remove('p-2');
+    for (let mutation of mutationsList) {
+        if (mutation.type === 'childList' || mutation.type === 'characterData') {
+            if (mutation.target.textContent.trim().length > 0) {
+                mutation.target.classList.add('p-2');
+            } else {
+                mutation.target.classList.remove('p-2');
+            }
+        }
     }
-    }
-}
 }
 
 // Mutation Observerの設定

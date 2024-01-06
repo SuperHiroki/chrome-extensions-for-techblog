@@ -20,12 +20,12 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
         chrome.storage.local.get('apiToken', (result) => {
             if (result.apiToken) {
                 apiToken = result.apiToken;
-                console.log('GGGGGGGGGGGGGGGGGG(background.js) apiToken found: ' + apiToken);
-                //popup.jsにトークンを送信する。
-                sendResponse({ token: apiToken });
             }
+            console.log('GGGGGGGGGGGGGGGGGG(background.js) apiToken from chrome extension storage: ' + apiToken);
+            //popup.jsにトークンを送信する。
+            sendResponse({ token: apiToken });
         });
     }
-    return true;
+    return true;//sendResponseの処理が終わるまでチャネルを閉じないでほしいと送信する。
 });
 

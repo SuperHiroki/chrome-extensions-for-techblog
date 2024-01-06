@@ -22,7 +22,7 @@ async function sendApiRequest(method, url, apiToken, body = null) {
         const response = await fetch(url, options);
         const responseData = await response.json(); 
         if (!response.ok) {
-            const error = new Error(responseData.message || 'AAAAAAAAA(popup.js) API request failed.');
+            const error = new Error(responseData.message || 'API request failed.');
             error.status = response.status;
             console.log('CCCCCCCCCCCCCCCCCCCCC(popup.js) error.message: ', error.message, ' YYYYYYYYYYY(popup.js) error.status: ', error.status);
             throw error;
@@ -40,7 +40,7 @@ function getApiToken() {
             if (response && response.token) {
                 resolve(response.token);
             } else {
-                reject('UUUUUUUUUUU(popup.js) User token not found. Please login.');
+                reject('User token not found. Please login.');
             }
         });
     });
@@ -51,7 +51,7 @@ function getCurrentTabUrl() {
     return new Promise((resolve, reject) => {
         chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
             if (tabs.length === 0) {
-                reject('CCCCCCCCCCC(popup.js) No current tab.');
+                reject('No current tab.');
             } else {
                 resolve(tabs[0].url);
             }
@@ -65,7 +65,7 @@ function getCurrentTabUrl() {
 async function handleAction(actionType) {
     try {
         //methodを取得
-        let method = null;
+        let method;
         if(actionType == 'like'||actionType == 'bookmark'||actionType == 'archive'){
             method ='POST';
         }else if(actionType == 'unlike'||actionType == 'unbookmark'||actionType == 'unarchive'){
@@ -78,29 +78,52 @@ async function handleAction(actionType) {
         //apiTokenを取得
         const apiToken = await getApiToken();
         //APIへリクエスト
-        const response_json = await sendApiRequest(method, apiUrl, apiToken);
-        if(response_json && response_json.message) {
-            document.getElementById("msg").textContent = response_json.message;
-        }
+        const response = await sendApiRequest(method, apiUrl, apiToken);
+        //画面に反映する
+        document.getElementById("success_msg").textContent = response.message;
+        updateButtonsVisibilityFromActionType(actionType);
     } catch (error) {
-        console.error('BBBBBBBBBB(popup.js) catch error: ', error);
+        document.getElementById("error_msg").textContent = error;
+        console.error('BBBBBBBBBB(popup.js) Caught error: ', error);
     }
+}
+
+//いいね（ブックマーク、アーカイブ）をつけたり外したりしたら下記を実行して表示・非表示を切り替える。
+function updateButtonsVisibilityFromActionType(actionType) {
+    let actionTypeReversed;
+    if (actionType.startsWith('un')) {
+        actionTypeReversed = actionType.substring(2); // 'un'を取り除く
+    } else {
+        actionTypeReversed = 'un' + actionType; // 'un'を追加する
+    }
+    document.getElementById(actionTypeReversed).style.display = "block";
+    document.getElementById(actionType).style.display = "none";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////ページを読み込んだ時に発火する関数
 // メイン関数
 document.addEventListener('DOMContentLoaded', async () => {
+    //ログインしていないものとして表示する
+    console.log('HHHHHHHHHHHHHHHHHHHHHHHHHHHHHH(popup.js) ');
+    changeVisibilityFromIsLoggedIn(false);
     //ボタンにイベントを設置
     setActionToButton();
     try {
         //いいね（ブックマーク、アーカイブ）の状態を取得
         const response = await getArticleState();
-        console.log('WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW(popup.js) response: ', response, 'DDDDDDDD');
-        //ボタンの表示・非表示を変更する
+        console.log('WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW(popup.js) response: ', response, ' DDDDDDDD');
+        //ユーザ情報を取得
+        const responseUserData = await getUserInfo();
+        console.log('HHHHHHHHHHHHHHHHHHHHHHHHHHHHHH(popup.js) responseUserData: ', responseUserData, ' CCCCCCCC');
+        //画面に反映する
+        changeVisibilityFromIsLoggedIn(true);
         updateButtonsVisibility(response);
+        document.getElementById("success_msg").textContent = response.message;
+        document.getElementById("userName").textContent = responseUserData.name;
     } catch (error) {
-        console.error('EEEEEEEEEEEEEEEEEEEEEEEEE(popup.js) Caught error:', error);
+        document.getElementById("error_msg").textContent = error;
+        console.error('EEEEEEEEEEEEEEEEEEEEEEEEE(popup.js) Caught error: ', error);
     }
 });
 
@@ -125,10 +148,21 @@ async function getArticleState() {
         console.log('SSSSSSSSSS(popup.js) apiToken: ' + apiToken);
 
         const response = await sendApiRequest('GET', apiUrl, apiToken);
-        console.log('XXXXXXXXXXXXXXXXXXX(popup.js) Article State:', response);
+        console.log('XXXXXXXXXXXXXXXXXXX(popup.js) Article State: ', response);
         return response;
     } catch (error) {
         throw error;
+    }
+}
+
+//ログインできているかどうかで表示・非表示を切り替える。
+function changeVisibilityFromIsLoggedIn(isLoggedIn = false) {
+    if(isLoggedIn==true){
+        document.getElementById("isLoggedIn").style.display = "block";
+        document.getElementById("notIsLoggedIn").style.display = "none";
+    }else{
+        document.getElementById("isLoggedIn").style.display = "none";
+        document.getElementById("notIsLoggedIn").style.display = "block";
     }
 }
 
@@ -161,5 +195,19 @@ function updateButtonsVisibility(response) {
         document.getElementById("unarchive").style.display = "none";
     }
 }
+
+//ユーザ情報を取得する。
+async function getUserInfo() {
+    try {
+        const apiToken = await getApiToken();
+        const apiUrl = 'http://techblog.shiroatohiro.com/api/user';
+        const response = await sendApiRequest('GET', apiUrl, apiToken);
+        console.log('WWWWWWWWWWWWWWWWWWWWWWWWWWWW User Info:', response);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
