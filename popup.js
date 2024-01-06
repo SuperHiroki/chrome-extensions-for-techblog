@@ -52,3 +52,32 @@ document.getElementById("unbookmark").addEventListener("click", () => handleActi
 document.getElementById("archive").addEventListener("click", () => handleAction('archive'));
 document.getElementById("unarchive").addEventListener("click", () => handleAction('unarchive'));
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+//テスト
+document.getElementById("test").addEventListener("click", () => handleAction_test());
+
+function handleAction_test() {
+    // ここでbackground.jsからトークンを取得する
+    chrome.runtime.sendMessage({ request: "getApiToken" }, async function(response) {
+        if (response && response.token) {
+            const apiToken = response.token;
+            console.log('in popup.js FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF apiToken: ' + apiToken);
+            // 現在のタブのURLを取得
+            chrome.tabs.query({active: true, currentWindow: true}, async function(tabs) {
+                var currentTab = tabs[0];
+                if (currentTab) {
+                    const articleUrl = encodeURIComponent(currentTab.url);
+                    const apiUrl = `http://techblog.shiroatohiro.com/api/test`;
+                    // 非同期リクエストを実行して応答を待つ
+                    const response_json = await sendApiRequest('GET', apiUrl, apiToken);
+                    document.getElementById("msg").textContent = response_json.message;
+                }
+            });
+        } else {
+            console.error('in popup.js VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV User token not found. Please login.');
+        }
+    });
+}
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
