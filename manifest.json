@@ -10,7 +10,9 @@
         "storage"
     ],
     "host_permissions": [
-        "http://techblog.shiroatohiro.com/*"
+        "http://techblog.shiroatohiro.com/*",
+        "http://*/*",
+        "https://*/*"
     ],
     "action": {
       "default_popup": "popup.html"

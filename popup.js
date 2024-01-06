@@ -57,7 +57,7 @@ function getCurrentTabUrl() {
     });
 }
 
-//
+//メインの関数
 async function handleAction(actionType) {
     try {
         //methodを取得
@@ -69,6 +69,7 @@ async function handleAction(actionType) {
         }
         //apiUrlを取得
         const articleUrl = await getCurrentTabUrl();
+        console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA(popup.js) articleUrl: ' + articleUrl);
         let apiUrl = `http://techblog.shiroatohiro.com/api/${actionType}-article?articleUrl=${encodeURIComponent(articleUrl)}`;
         //apiTokenを取得
         const apiToken = await getApiToken();
