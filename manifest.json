@@ -3,7 +3,15 @@
     "description": "テックブログ管理サイト(http://techblog.shiroatohiro.com/)と併用することでテックブログを簡単に管理することができる。この拡張機能によって現在の記事に対して、いいね(ブックマーク、アーカイブ)をつけることができる。",
     "version": "1.0",
     "manifest_version": 3,
-    "permissions": ["activeTab", "scripting"],
+    "permissions": [
+        "activeTab",
+        "scripting",
+        "cookies",
+        "storage"
+    ],
+    "host_permissions": [
+        "http://techblog.shiroatohiro.com/*"
+    ],
     "action": {
       "default_popup": "popup.html"
     },
@@ -12,7 +20,7 @@
         "32": "icon32.png",
         "48": "icon48.png",
         "128": "icon128.png"
-      },
+    },
     "commands": {
       "_execute_action": {
         "suggested_key": {
@@ -21,5 +29,14 @@
         },
         "description": "Run extension."
       }
-    }
+    },
+    "background": {
+      "service_worker": "background.js"
+    },
+    "content_scripts": [
+      {
+        "matches": ["http://techblog.shiroatohiro.com/*"],
+        "js": ["content.js"]
+      }
+    ]
 }
