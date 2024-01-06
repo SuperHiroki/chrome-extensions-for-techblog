@@ -2,32 +2,36 @@
 
 console.log('in popup.js GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG start');
 
-let apiToken = null;
-
+//APIリクエスト
 async function sendApiRequest(method, url, apiToken, body = null) {
+    const options = {
+        method: method,
+        credentials: 'include',
+        headers: {
+            'Authorization': `Bearer ${apiToken}`,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    };
+    if (body) {
+        options.body = JSON.stringify(body);
+    }
     try {
-        const options = {
-            method: method,
-            credentials: 'include',
-            headers: {
-                'Authorization': `Bearer ${apiToken}`,
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        };
-        if (body) {
-            options.body = JSON.stringify(body);
-        }
         const response = await fetch(url, options);
+        const responseData = await response.json(); 
         if (!response.ok) {
-            throw new Error(`in popup.js AAAAAAAAA API request failed: ${response.statusText}`);
+            const error = new Error(responseData.message || 'in popup.js AAAAAAAAA API request failed');
+            error.status = response.status;
+            throw error;
         }
-        return await response.json();
+        return await responseData;
     } catch (error) {
-        console.error('in popup.js EEEEEEEE Error:', error);
+        console.error('in popup.js CCCCCCCCCCCCCCCCCCCCC error.message: ', error.message, ' YYYYYYYYYYY error.status: ', error.status);
+        throw error;
     }
 }
 
+//APIトークンを取得
 function getApiToken() {
     return new Promise((resolve, reject) => {
         chrome.runtime.sendMessage({ request: "getApiToken" }, function(response) {
@@ -40,6 +44,7 @@ function getApiToken() {
     });
 }
 
+//現在のタブのURLを取得
 function getCurrentTabUrl() {
     return new Promise((resolve, reject) => {
         chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
@@ -52,20 +57,28 @@ function getCurrentTabUrl() {
     });
 }
 
+//
 async function handleAction(actionType) {
     try {
-        apiToken = await getApiToken();
+        //methodを取得
+        let method = 'GET';
+        if(actionType == 'like'||actionType == 'bookmark'||actionType == 'archive'){
+            method ='POST';
+        }else if(actionType == 'unlike'||actionType == 'unbookmark'||actionType == 'unarchive'){
+            method ='DELETE';
+        }
+        //apiUrlを取得
         const articleUrl = await getCurrentTabUrl();
-
-        let apiUrl = `http://techblog.shiroatohiro.com/api/${actionType}-article`;
-        let body = { url: articleUrl };
-
-        const response_json = await sendApiRequest(actionType, apiUrl, apiToken, body);
+        let apiUrl = `http://techblog.shiroatohiro.com/api/${actionType}-article?articleUrl=${encodeURIComponent(articleUrl)}`;
+        //apiTokenを取得
+        const apiToken = await getApiToken();
+        //APIへリクエスト
+        const response_json = await sendApiRequest(method, apiUrl, apiToken);
         if(response_json && response_json.message) {
             document.getElementById("msg").textContent = response_json.message;
         }
     } catch (error) {
-        console.error('in popup.js EEEEEEEEEEE Error: ', error);
+        console.error('in popup.js BBBBBBBBBB: ', error);
     }
 }
 // ボタンにイベントリスナーを設定
