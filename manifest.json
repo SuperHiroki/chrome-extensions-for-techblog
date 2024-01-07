@@ -1,5 +1,5 @@
 {
-    "name": "Tech-Blog Management",
+    "name": "Super Tech-Blog Management",
     "description": "テックブログ管理サイト(http://techblog.shiroatohiro.com/)と併用することでテックブログを簡単に管理することができる。この拡張機能によって現在の記事に対して、いいね(ブックマーク、アーカイブ)をつけることができる。",
     "version": "1.0",
     "manifest_version": 3,
