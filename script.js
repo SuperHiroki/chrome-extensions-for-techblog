@@ -33,10 +33,5 @@ const successMsg = document.getElementById('success_msg');
 
 errorMsgObserver.observe(errorMsg, observerOptions);
 successMsgObserver.observe(successMsg, observerOptions);
-
-//テストで文字を入れてみる。
-document.getElementById('test').addEventListener('click', function(){
-    errorMsg.textContent = 'UUU';
-});
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////

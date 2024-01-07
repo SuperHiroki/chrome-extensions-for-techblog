@@ -6,8 +6,8 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <style>
     html, body {
-      width: 250px;  /* 幅を指定 */
-      height: 200px; /* 高さを指定 */
+      width: 270px;  /* 幅を指定 */
+      height: 220px; /* 高さを指定 */
       overflow: auto; /* 必要に応じてスクロールバーを表示 */
     }
     #error_msg {
@@ -19,11 +19,11 @@
       color: #155724; /* 濃い緑色 */
     }
     .icon-img {
-        max-width: 32px; /* 画像の最大幅を設定 */
+        max-width: 40px; /* 画像の最大幅を設定 */
         cursor: pointer;
     }
     .icon-img img {
-        width: 95%;
+        width: 85%;
         transition: opacity 0.3s ease;
     }
     .icon-img:hover img {
@@ -35,6 +35,9 @@
     .text-extra-small {
       font-size: 0.7rem; /* ここで希望するフォントサイズに設定 */
     }
+    .custom-header {
+    background-color: #dddddd; /* ここで任意の色を指定 */
+    }
   </style>
 </head>
 
@@ -43,12 +46,14 @@
 <div class="container-fluid mt-2">
 
   <!--タイトル-->
-  <div class="text-center mt-1 py-1 rounded shadow" style="background-color: #007bff; color: white;">
+  <div class="text-center mt-1 py-1 px-1 rounded shadow" style="background-color: #6d6d6d; color: white;">
     Super Tech-Blog Management
   </div>
   <!--ユーザネーム-->
   <div class="d-flex align-items-center justify-content-center">
-    <div class="text-center mt-1 py-1 rounded shadow text-extra-small w-75" style="background-color: #aaaaaa; color: rgb(0, 0, 0);" id="userName">Not Logged In</div>
+    <div class="text-center mt-1 py-1 rounded shadow text-extra-small w-75" style="background-color: #ebebeb; color: rgb(0, 0, 0); border: 2px solid #000000;" id="userName">
+      Not Logged In
+    </div>
   </div>
 
   <!--エラーメッセージ-->
@@ -62,45 +67,66 @@
   </div>
 
   <!--ログインしている時-->
-  <div id="isLoggedIn">
+  <div id="isLoggedIn" class="my-2">
     <!--いいね（ブックマーク、アーカイブ）の画像-->
     <div id="allButtons">
       <div class="d-flex flex-wrap justify-content-around m-4">
         <div id="unlike" class="icon-img">
-            <img src="images/like.png" alt="Like" class="img-fluid">
+            <img src="images/like.png" alt="Like">
         </div>
         <div id="like" class="icon-img">
-            <img src="images/unlike.png" alt="Unlike" class="img-fluid">
+            <img src="images/unlike.png" alt="Unlike">
         </div>
         <div id="unbookmark" class="icon-img">
-            <img src="images/bookmark.png" alt="Bookmark" class="img-fluid">
+            <img src="images/bookmark.png" alt="Bookmark">
         </div>
         <div id="bookmark" class="icon-img">
-            <img src="images/unbookmark.png" alt="Unbookmark" class="img-fluid">
+            <img src="images/unbookmark.png" alt="Unbookmark">
         </div>
         <div id="unarchive" class="icon-img">
-            <img src="images/archive.png" alt="Archive" class="img-fluid">
+            <img src="images/archive.png" alt="Archive">
         </div>
         <div id="archive" class="icon-img">
-            <img src="images/unarchive.png" alt="Unarchive" class="img-fluid">
+            <img src="images/unarchive.png" alt="Unarchive">
         </div>
       </div>
     </div>
   </div>
   
   <!--ログインしていない時-->
-  <div id="notIsLoggedIn">
-      <!--ログインURL-->
-      <div class="text-center mt-1 py-1">
-        ログインは<a href="http://techblog.shiroatohiro.com/login">こちら</a>から。
+  <div id="notIsLoggedIn" class="my-2">
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+            <!--ログインフォーム-->
+            <div class="card shadow rounded">
+                <div class="card-header custom-header m-2">
+                    ログインフォーム
+                </div>
+                <div class="card-body">
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label for="email">メールアドレス:</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">パスワード:</label>
+                            <input type="password" class="form-control" id="password" required>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary">ログイン</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!--サインアップはアプリから行う。-->
+            <div class="text-center mt-2">
+                登録は<a href="http://techblog.shiroatohiro.com/register" target="_blank">こちら</a>から。
+            </div>
+        </div>
       </div>
   </div>
 
 
-</div>
-
-<div id="test">
-  test
 </div>
 
 <script src="popup.js"></script>
