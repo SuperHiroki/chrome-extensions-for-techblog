@@ -1,5 +1,5 @@
 // content.js
-//manifest.jsonに定義されているが、「http://techblog.shiroatohiro.com/*」を訪れたときに発火する。
+//manifest.jsonに定義されているが、「https://techblog.shiroatohiro.com/*」を訪れたときに発火する。
 
 console.log('RRRRRRRRRRRRRRRRRRRRRRRRR(content.js) Start.');
 

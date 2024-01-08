@@ -1,6 +1,7 @@
 // popup.js
 
 console.log('GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG(popup.js) Start.');
+const baseUrl = "https://techblog.shiroatohiro.com/api";
 
 ////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////サブ関数
@@ -74,7 +75,7 @@ async function handleAction(actionType) {
         //apiUrlを取得
         const articleUrl = await getCurrentTabUrl();
         console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA(popup.js) articleUrl: ' + articleUrl);
-        let apiUrl = `http://techblog.shiroatohiro.com/api/${actionType}-article?articleUrl=${encodeURIComponent(articleUrl)}`;
+        let apiUrl = baseUrl + `/${actionType}-article?articleUrl=${encodeURIComponent(articleUrl)}`;
         //apiTokenを取得
         const apiToken = await getApiToken();
         //APIへリクエスト
@@ -156,7 +157,7 @@ async function getUserStateToArticle() {
         console.log('DDDDDDDDDDDDDDDDDD(popup.js) Current Article URL: ' + articleUrl);
 
         const apiToken = await getApiToken();//rejectされたときにcatchで捕捉されない？マジで疑問です。
-        const apiUrl = `http://techblog.shiroatohiro.com/api/get-state?articleUrl=${encodeURIComponent(articleUrl)}`;
+        const apiUrl = baseUrl + `/get-state?articleUrl=${encodeURIComponent(articleUrl)}`;
         console.log('SSSSSSSSSS(popup.js) apiToken: ' + apiToken);
 
         const response = await sendApiRequest('GET', apiUrl, apiToken);
@@ -220,7 +221,7 @@ function updateButtonsVisibility(response = null) {
 async function getUserInfo() {
     try {
         const apiToken = await getApiToken();
-        const apiUrl = 'http://techblog.shiroatohiro.com/api/user';
+        const apiUrl = baseUrl + '/user';
         const response = await sendApiRequest('GET', apiUrl, apiToken);
         console.log('XXXXXXXXXXXXXXXXXXX(popup.js) User Info:', response);
         return response;
@@ -238,7 +239,7 @@ async function login(event) {
     const password = document.getElementById('password').value;
 
     try {
-        const response = await sendApiRequest('POST', 'http://techblog.shiroatohiro.com/api/login', null, { 'email': email, 'password': password });
+        const response = await sendApiRequest('POST', baseUrl + '/login', null, { 'email': email, 'password': password });
         if (response.apiToken) {
             // トークンをストレージに保存
             const apiToken = response.apiToken;
