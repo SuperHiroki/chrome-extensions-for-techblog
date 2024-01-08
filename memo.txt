@@ -1,0 +1,7 @@
+manifest.jsonの権限は下記がある。
+    "permissions": [
+        "activeTab",
+        "scripting",
+        "cookies",
+        "storage"
+    ],
