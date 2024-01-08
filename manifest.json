@@ -10,8 +10,6 @@
         "storage"
     ],
     "host_permissions": [
-        "http://techblog.shiroatohiro.com/*",
-        "https://techblog.shiroatohiro.com/*",
         "http://*/*",
         "https://*/*"
     ],
@@ -27,8 +25,8 @@
     "commands": {
       "_execute_action": {
         "suggested_key": {
-          "default": "Ctrl+Shift+H",
-          "mac": "MacCtrl+Shift+H"
+          "default": "Ctrl+Shift+X",
+          "mac": "Command+Shift+X"
         },
         "description": "Run extension."
       }
