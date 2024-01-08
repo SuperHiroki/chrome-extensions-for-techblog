@@ -60,6 +60,17 @@ function getCurrentTabUrl() {
     });
 }
 
+//成功メッセージとエラーメッセージの表示
+function errorOrSuccessMsg(errorOrSuccess = "error", msg = ""){
+    if(errorOrSuccess == "error"){
+        document.getElementById("error_msg").textContent = msg;
+        document.getElementById("success_msg").textContent = "";
+    }else if(errorOrSuccess == "success"){
+        document.getElementById("error_msg").textContent = "";
+        document.getElementById("success_msg").textContent = msg;
+    }
+}
+
 ////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////ボタンを押したときに発火する関数
 //いいね（ブックマーク、アーカイブ）をつけるリクエストを飛ばすメイン関数
@@ -81,10 +92,10 @@ async function handleAction(actionType) {
         //APIへリクエスト
         const response = await sendApiRequest(method, apiUrl, apiToken);
         //画面に反映する
-        document.getElementById("success_msg").textContent = response.message;
+        errorOrSuccessMsg("success", response.message);
         updateButtonsVisibilityFromActionType(actionType);
     } catch (error) {
-        document.getElementById("error_msg").textContent = error;
+        errorOrSuccessMsg("error", error.message);
         console.error('BBBBBBBBBB(popup.js) Caught error: ', error);
     }
 }
@@ -114,7 +125,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
         await updateUserState();
     } catch (error) {
-        document.getElementById("error_msg").textContent = error;
+        errorOrSuccessMsg("error", error);
         console.error('EEEEEEEEEEEEEEEEEEEEEEEEE(popup.js) Caught error: ', error);
     }
 });
@@ -131,7 +142,7 @@ async function updateUserState(){
         const response = await getUserStateToArticle();
         console.log('WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW(popup.js) response: ', response, ' DDDDDDDD');
         updateButtonsVisibility(response);
-        document.getElementById("success_msg").textContent = response.message;
+        errorOrSuccessMsg("success", response.message);
     }catch (error) {
         throw error;
     }
@@ -250,7 +261,10 @@ async function login(event) {
             throw new Error('Login failed.');
         }
     } catch (error) {
-        document.getElementById("error_msg").textContent = error.message;
+        errorOrSuccessMsg("error", error.message);
         console.error('ZZZZZZZZZZZZZZZ(popup.js) login error: ', error);
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////

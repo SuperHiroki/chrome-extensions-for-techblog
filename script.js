@@ -19,9 +19,9 @@ function handleMutation(mutationsList) {
 
 // Mutation Observerの設定
 const observerOptions = {
-childList: true, // 子要素の変更を監視
-characterData: true, // 文字データの変更を監視
-subtree: true // 子孫要素の変更も監視
+    childList: true, // 子要素の変更を監視
+    characterData: true, // 文字データの変更を監視
+    subtree: true // 子孫要素の変更も監視
 };
 
 // Observerのインスタンスを作成し、監視を開始
