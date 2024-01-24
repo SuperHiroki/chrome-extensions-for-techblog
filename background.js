@@ -23,7 +23,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
             }
             console.log('GGGGGGGGGGGGGGGGGG(background.js) apiToken from chrome extension storage: ' + apiToken);
             //popup.jsにトークンを送信する。
-            sendResponse({ token: apiToken });
+            sendResponse({ apiToken: apiToken });
         });
     }
     return true;//sendResponseの処理が終わるまでチャネルを閉じないでほしいと送信する。

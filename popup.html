@@ -5,38 +5,37 @@
   <!-- Bootstrap CSS CDN -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <style>
+    /*画面サイズ*/
     html, body {
-      width: 270px;  /* 幅を指定 */
-      height: 220px; /* 高さを指定 */
-      overflow: auto; /* 必要に応じてスクロールバーを表示 */
+      width: 270px;
+      height: 220px;
+      overflow: auto;
     }
+
+    /*フラッシュ*/
     #error_msg {
-      background-color: #f8d7da; /* 淡い赤色 */
-      color: #721c24; /* 濃い赤色 */
+      background-color: #f8d7da;
+      color: #721c24;
     }
     #success_msg {
-      background-color: #d4edda; /* 淡い緑色 */
-      color: #155724; /* 濃い緑色 */
+      background-color: #d4edda;
+      color: #155724;
     }
+
+    /*アイコン*/
     .icon-img {
-        max-width: 40px; /* 画像の最大幅を設定 */
+        max-width: 40px;
         cursor: pointer;
+    }
+    .icon-img:hover {
+      background-color: #add8e6;
     }
     .icon-img img {
         width: 85%;
         transition: opacity 0.3s ease;
     }
     .icon-img:hover img {
-        opacity: 0.7; /* ホバー時の画像の不透明度を変更 */
-    }
-    .icon-img:hover {
-      background-color: #add8e6;/* ホバー時の背景色を変更 */
-    }
-    .text-extra-small {
-      font-size: 0.7rem; /* ここで希望するフォントサイズに設定 */
-    }
-    .custom-header {
-    background-color: #dddddd; /* ここで任意の色を指定 */
+        opacity: 0.7; 
     }
   </style>
 </head>
@@ -51,25 +50,25 @@
   </div>
   <!--ユーザネーム-->
   <div class="d-flex align-items-center justify-content-center">
-    <div class="text-center mt-1 py-1 rounded shadow text-extra-small w-75" style="background-color: #ebebeb; color: rgb(0, 0, 0); border: 2px solid #000000;" id="userName">
+    <div class="text-center mt-1 py-1 rounded shadow w-75" style="font-size: 0.7rem; background-color: #ebebeb; color: rgb(0, 0, 0); border: 2px solid #000000;" id="userName">
       Not Logged In
     </div>
   </div>
 
   <!--エラーメッセージ-->
   <div class="w-100 mt-1">
-    <div id='error_msg' class="text-center text-extra-small"></div>
+    <div id='error_msg' class="text-center p-2" style="font-size: 0.7rem; display: none;"></div>
   </div>
 
   <!--成功メッセージ-->
   <div class="w-100 mt-1">
-    <div id='success_msg' class="text-center text-extra-small"></div>
+    <div id='success_msg' class="text-center p-2" style="font-size: 0.7rem; display: none;"></div>
   </div>
 
   <!--ログインしている時-->
-  <div id="isLoggedIn" class="my-2">
+  <div id="isLoggedIn" class="my-2" style="display: none;">
     <!--いいね（ブックマーク、アーカイブ）の画像-->
-    <div id="allButtons">
+    <div id="allButtons" style="display: none;">
       <div class="d-flex flex-wrap justify-content-around m-4">
         <div id="unlike" class="icon-img">
             <img src="images/like.png" alt="Like">
@@ -89,6 +88,12 @@
         <div id="archive" class="icon-img">
             <img src="images/unarchive.png" alt="Unarchive">
         </div>
+        <div id="untrash" class="icon-img">
+            <img src="images/trash.png" alt="trash">
+        </div>
+        <div id="trash" class="icon-img">
+            <img src="images/untrash.png" alt="Untrash">
+        </div>
       </div>
     </div>
   </div>
@@ -99,7 +104,7 @@
         <div class="col-md-6">
             <!--ログインフォーム-->
             <div class="card shadow rounded">
-                <div class="card-header custom-header m-2">
+                <div class="card-header m-2" style="background-color: #dddddd;">
                     ログインフォーム
                 </div>
                 <div class="card-body">
