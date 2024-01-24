@@ -82,9 +82,9 @@ function errorOrSuccessMsg(errorOrSuccess = "error", msg = ""){
 //アクションタイプからPOSTなどのメソッドを取得する。
 function getMethod(actionType){
     let method;
-    if(actionType == 'like'||actionType == 'bookmark'||actionType == 'archive'||actionType == 'trash'){
+    if(actionType == 'like'||actionType == 'bookmark'||actionType == 'archive'||actionType == 'trash'||actionType == 'follow-author'||actionType == 'trash-author'){
         method ='POST';
-    }else if(actionType == 'unlike'||actionType == 'unbookmark'||actionType == 'unarchive'||actionType == 'untrash'){
+    }else if(actionType == 'unlike'||actionType == 'unbookmark'||actionType == 'unarchive'||actionType == 'untrash'||actionType == 'unfollow-author'||actionType == 'untrash-author'){
         method ='DELETE';
     }
     return method;
@@ -99,6 +99,40 @@ function reverseType(actionType){
         actionTypeReversed = 'un' + actionType;
     }
     return actionTypeReversed;
+}
+
+//アクションタイプからapiUrlを取得する。
+function getApiUrl(actionType, articleUrl){
+    let apiUrl;
+    if(actionType == 'like'||actionType == 'bookmark'||actionType == 'archive'||actionType == 'trash'||actionType == 'unlike'||actionType == 'unbookmark'||actionType == 'unarchive'||actionType == 'untrash'){
+        apiUrl = baseUrl + `/${actionType}-article?articleUrl=${encodeURIComponent(articleUrl)}`;
+    }else if(actionType == 'follow-author'||actionType == 'trash-author'||actionType == 'unfollow-author'||actionType == 'untrash-author'){
+        apiUrl = baseUrl + `/${actionType}?articleUrl=${encodeURIComponent(articleUrl)}`;
+    }
+    return apiUrl;
+}
+
+//オーバーレイ
+function trashOverlay(actionType){
+    if(actionType === "trash"){
+        const grayOverlayElement = document.getElementById("gray-overlay-article");
+        grayOverlayElement.style.display = "block";
+    }else if(actionType === "untrash"){
+        const grayOverlayElement = document.getElementById("gray-overlay-article");
+        grayOverlayElement.style.display = "none";
+    }else if(actionType === "trash-author"){
+        const grayOverlayElement = document.getElementById("gray-overlay-author");
+        grayOverlayElement.style.display = "block";
+    }else if(actionType === "untrash-author"){
+        const grayOverlayElement = document.getElementById("gray-overlay-author");
+        grayOverlayElement.style.display = "none";
+    }
+}
+
+//アイコン（ハートなど）の切り替え
+function toggleIcon(actionType){
+    document.getElementById(actionType).style.display = "none";
+    document.getElementById(reverseType(actionType)).style.display = "block";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -119,6 +153,11 @@ function setActionToButton(){
     document.getElementById("unarchive").addEventListener("click", () => handleAction('unarchive'));
     document.getElementById("trash").addEventListener("click", () => handleAction('trash'));
     document.getElementById("untrash").addEventListener("click", () => handleAction('untrash'));
+    //フォロー（アンフォロー）に対して
+    document.getElementById("follow-author").addEventListener("click", () => handleAction('follow-author'));
+    document.getElementById("unfollow-author").addEventListener("click", () => handleAction('unfollow-author'));
+    document.getElementById("trash-author").addEventListener("click", () => handleAction('trash-author'));
+    document.getElementById("untrash-author").addEventListener("click", () => handleAction('untrash-author'));
     //ログインボタン
     document.getElementById('loginForm').addEventListener('submit', login);
 }
@@ -129,11 +168,11 @@ async function handleAction(actionType) {
         const apiToken = await getApiToken();
         const method = getMethod(actionType);
         const articleUrl = await getCurrentTabUrl();
-        let apiUrl = baseUrl + `/${actionType}-article?articleUrl=${encodeURIComponent(articleUrl)}`;
+        const apiUrl = getApiUrl(actionType, articleUrl);
         const response = await sendApiRequest(method, apiToken, apiUrl);
         //画面に反映する
-        errorOrSuccessMsg("success", response.message);
         updateButtonsVisibilityFromActionType(actionType);
+        errorOrSuccessMsg("success", response.message);
     } catch (error) {
         errorOrSuccessMsg("error", error);
     }
@@ -141,9 +180,8 @@ async function handleAction(actionType) {
 
 //いいね（ブックマーク、アーカイブ）をつけたり外したりしたら下記を実行して表示・非表示を切り替える。
 function updateButtonsVisibilityFromActionType(actionType) {
-    const actionTypeReversed = reverseType(actionType);
-    document.getElementById(actionTypeReversed).style.display = "block";
-    document.getElementById(actionType).style.display = "none";
+    toggleIcon(actionType);
+    trashOverlay(actionType);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -225,40 +263,52 @@ function updateButtonsVisibility(response) {
     //全体のボタンに適用する
     document.getElementById("allButtons").style.display = "block";
 
+    //////////////////////////////////////////////////
     // likeの状態に基づいてボタンを表示・非表示
     if (response.like) {
-        document.getElementById("like").style.display = "none";
-        document.getElementById("unlike").style.display = "block";
+        toggleIcon("like");
     } else {
-        document.getElementById("like").style.display = "block";
-        document.getElementById("unlike").style.display = "none";
+        toggleIcon("unlike");
     }
 
     // bookmarkの状態に基づいてボタンを表示・非表示
     if (response.bookmark) {
-        document.getElementById("bookmark").style.display = "none";
-        document.getElementById("unbookmark").style.display = "block";
+        toggleIcon("bookmark");
     } else {
-        document.getElementById("bookmark").style.display = "block";
-        document.getElementById("unbookmark").style.display = "none";
+        toggleIcon("unbookmark");
     }
 
     // archiveの状態に基づいてボタンを表示・非表示
     if (response.archive) {
-        document.getElementById("archive").style.display = "none";
-        document.getElementById("unarchive").style.display = "block";
+        toggleIcon("archive");
     } else {
-        document.getElementById("archive").style.display = "block";
-        document.getElementById("unarchive").style.display = "none";
+        toggleIcon("unarchive");
     }
 
     //trashについて
     if (response.trash) {
-        document.getElementById("trash").style.display = "none";
-        document.getElementById("untrash").style.display = "block";
+        toggleIcon("trash");
+        trashOverlay("trash");
     } else {
-        document.getElementById("trash").style.display = "block";
-        document.getElementById("untrash").style.display = "none";
+        toggleIcon("untrash");
+        trashOverlay("untrash");
+    }
+
+    //////////////////////////////////////////////////
+    //followについて
+    if (response.followAuthor) {
+        toggleIcon("follow-author");
+    } else {
+        toggleIcon("unfollow-author");
+    }
+
+    //trashについて
+    if (response.trashAuthor) {
+        toggleIcon("trash-author");
+        trashOverlay("trash-author");
+    }else{
+        toggleIcon("untrash-author");
+        trashOverlay("untrash-author");
     }
 }
 

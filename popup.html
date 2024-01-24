@@ -37,6 +37,18 @@
     .icon-img:hover img {
         opacity: 0.7; 
     }
+
+    /*ゴミ箱に入った記事のオーバーレイ*/
+    .gray-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.7); 
+        pointer-events: none;
+        z-index: 100;
+    }
   </style>
 </head>
 
@@ -69,32 +81,58 @@
   <div id="isLoggedIn" class="my-2" style="display: none;">
     <!--いいね（ブックマーク、アーカイブ）の画像-->
     <div id="allButtons" style="display: none;">
-      <div class="d-flex flex-wrap justify-content-around m-4">
-        <div id="unlike" class="icon-img">
-            <img src="images/like.png" alt="Like">
+      <!--著者関連-->
+      <div class="card shadow m-2 rounded">
+        <div id="gray-overlay-author" class="gray-overlay rounded"></div>
+        <div class="d-flex align-items-center justify-content-center">
+          著者
         </div>
-        <div id="like" class="icon-img">
-            <img src="images/unlike.png" alt="Unlike">
-        </div>
-        <div id="unbookmark" class="icon-img">
-            <img src="images/bookmark.png" alt="Bookmark">
-        </div>
-        <div id="bookmark" class="icon-img">
-            <img src="images/unbookmark.png" alt="Unbookmark">
-        </div>
-        <div id="unarchive" class="icon-img">
-            <img src="images/archive.png" alt="Archive">
-        </div>
-        <div id="archive" class="icon-img">
-            <img src="images/unarchive.png" alt="Unarchive">
-        </div>
-        <div id="untrash" class="icon-img">
-            <img src="images/trash.png" alt="trash">
-        </div>
-        <div id="trash" class="icon-img">
-            <img src="images/untrash.png" alt="Untrash">
+        <div class="d-flex align-items-center justify-content-center m-2 gap-1">
+          <button id="unfollow-author" class="btn-lg btn-danger" style="font-size: 0.7rem;">フォロー解除する</button>
+          <button id="follow-author" class="btn-lg btn-success" style="font-size: 0.7rem;">フォローする</button>
+          <div id="untrash-author" class="icon-img">
+              <img src="images/trash.png" alt="Trash-Author">
+          </div>
+          <div id="trash-author" class="icon-img">
+              <img src="images/untrash.png" alt="Untrash-Author">
+          </div>
         </div>
       </div>
+
+      <!--記事関連-->
+      <div class="card shadow m-2 rounded">
+        <div id="gray-overlay-article" class="gray-overlay rounded"></div>
+        <div class="d-flex align-items-center justify-content-center">
+          記事
+        </div>
+        <div class="d-flex flex-wrap justify-content-around m-2">
+          <div id="unlike" class="icon-img">
+              <img src="images/like.png" alt="Like">
+          </div>
+          <div id="like" class="icon-img">
+              <img src="images/unlike.png" alt="Unlike">
+          </div>
+          <div id="unbookmark" class="icon-img">
+              <img src="images/bookmark.png" alt="Bookmark">
+          </div>
+          <div id="bookmark" class="icon-img">
+              <img src="images/unbookmark.png" alt="Unbookmark">
+          </div>
+          <div id="unarchive" class="icon-img">
+              <img src="images/archive.png" alt="Archive">
+          </div>
+          <div id="archive" class="icon-img">
+              <img src="images/unarchive.png" alt="Unarchive">
+          </div>
+          <div id="untrash" class="icon-img">
+              <img src="images/trash.png" alt="Trash">
+          </div>
+          <div id="trash" class="icon-img">
+              <img src="images/untrash.png" alt="Untrash">
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
   
